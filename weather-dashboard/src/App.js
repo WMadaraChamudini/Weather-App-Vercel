@@ -17,6 +17,10 @@ const stripCountrySuffix = (cityName) => (
   cityName.replace(/,\s*[A-Z]{2}$/i, '').trim()
 );
 
+const uniqueCities = (cities) => (
+  [...new Map(cities.filter(Boolean).map((cityName) => [cityName.toLowerCase(), cityName])).values()]
+);
+
 const getFriendlyError = (error) => (
   error.message === 'Failed to fetch'
     ? 'Unable to reach the live weather service. Please check your connection and try again.'
@@ -30,10 +34,12 @@ function App() {
   const [forecastData, setForecastData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [favoriteCities, setFavoriteCities] = useState([]);
   const [showForecast, setShowForecast] = useState(false);
   const [usingCurrentLocation, setUsingCurrentLocation] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(true);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -52,7 +58,12 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    localStorage.removeItem('favoriteCities');
+    const savedFavorites = localStorage.getItem('favoriteCities');
+    if (savedFavorites) {
+      const cleanedFavorites = uniqueCities(JSON.parse(savedFavorites).map(stripCountrySuffix));
+      setFavoriteCities(cleanedFavorites);
+      setShowFavorites(cleanedFavorites.length > 0);
+    }
 
     const savedSearches = localStorage.getItem('recentSearches');
     if (savedSearches) {
@@ -66,6 +77,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
   }, [recentSearches]);
+
+  useEffect(() => {
+    localStorage.setItem('favoriteCities', JSON.stringify(favoriteCities));
+  }, [favoriteCities]);
 
   const saveRecentSearch = (cityName) => {
     const cleanedCity = stripCountrySuffix(normalizeCity(cityName));
@@ -163,6 +178,18 @@ function App() {
     fetchWeatherData(cleanedCity);
   };
 
+  const addToFavorites = () => {
+    const favoriteCity = weatherData ? stripCountrySuffix(weatherData.city) : '';
+    if (favoriteCity && !favoriteCities.includes(favoriteCity)) {
+      setFavoriteCities([...favoriteCities, favoriteCity]);
+      setShowFavorites(true);
+    }
+  };
+
+  const removeFromFavorites = (cityToRemove) => {
+    setFavoriteCities(favoriteCities.filter(cityName => cityName !== cityToRemove));
+  };
+
   const removeFromRecentSearches = (cityToRemove) => {
     setRecentSearches(recentSearches.filter(item => item.city !== cityToRemove));
   };
@@ -174,6 +201,8 @@ function App() {
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
+
+  const isFavorite = weatherData && favoriteCities.includes(stripCountrySuffix(weatherData.city));
 
   return (
     <div className={`App theme-${theme}`}>
@@ -204,6 +233,15 @@ function App() {
                   title="Toggle theme"
                 >
                   {theme === 'light' ? '🌙' : '☀️'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowFavorites(!showFavorites)}
+                  className="icon-button favorites-button"
+                  aria-label="Show favorites"
+                  title="Show favorites"
+                >
+                  ⭐
                 </button>
               </>
             )}
@@ -264,6 +302,40 @@ function App() {
           </div>
         )}
 
+        {showFavorites && favoriteCities.length > 0 && (
+          <div className="favorites-section">
+            <h3>Favorite Cities</h3>
+            <div className="favorites-list">
+              {favoriteCities.map((favoriteCity) => (
+                <div key={favoriteCity} className="favorite-item">
+                  <button
+                    type="button"
+                    onClick={() => handleCityClick(favoriteCity)}
+                    className={`favorite-button ${stripCountrySuffix(weatherData?.city || '') === favoriteCity ? 'active' : ''}`}
+                  >
+                    {favoriteCity}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeFromFavorites(favoriteCity)}
+                    className="remove-favorite"
+                    aria-label={`Remove ${favoriteCity} from favorites`}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {showFavorites && favoriteCities.length === 0 && (
+          <div className="favorites-section empty-state">
+            <h3>Favorite Cities</h3>
+            <p>No favorite cities yet.</p>
+          </div>
+        )}
+
         {error && (
           <div className="error-message">
             {error}
@@ -274,6 +346,15 @@ function App() {
           <div className="weather-card">
             <div className="weather-header">
               <h2>{usingCurrentLocation ? `Current Location: ${weatherData.city}` : weatherData.city}</h2>
+              <button
+                type="button"
+                onClick={addToFavorites}
+                disabled={isFavorite}
+                className="add-favorite-button"
+                title={isFavorite ? 'Favorited' : 'Add to Favorites'}
+              >
+                {isFavorite ? '★ Favorited' : '☆ Add to Favorites'}
+              </button>
             </div>
 
             <div className="weather-main">
