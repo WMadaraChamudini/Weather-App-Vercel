@@ -38,7 +38,7 @@ function App() {
   const [showForecast, setShowForecast] = useState(false);
   const [usingCurrentLocation, setUsingCurrentLocation] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
-  const [showRecentSearches, setShowRecentSearches] = useState(true);
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
 
   useEffect(() => {
