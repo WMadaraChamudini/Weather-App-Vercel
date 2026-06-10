@@ -62,7 +62,6 @@ function App() {
     if (savedFavorites) {
       const cleanedFavorites = uniqueCities(JSON.parse(savedFavorites).map(stripCountrySuffix));
       setFavoriteCities(cleanedFavorites);
-      setShowFavorites(cleanedFavorites.length > 0);
     }
 
     const savedSearches = localStorage.getItem('recentSearches');
@@ -182,7 +181,6 @@ function App() {
     const favoriteCity = weatherData ? stripCountrySuffix(weatherData.city) : '';
     if (favoriteCity && !favoriteCities.includes(favoriteCity)) {
       setFavoriteCities([...favoriteCities, favoriteCity]);
-      setShowFavorites(true);
     }
   };
 
@@ -237,9 +235,10 @@ function App() {
                 <button
                   type="button"
                   onClick={() => setShowFavorites(!showFavorites)}
-                  className="icon-button favorites-button"
-                  aria-label="Show favorites"
-                  title="Show favorites"
+                  className={`icon-button favorites-button ${showFavorites ? 'active' : ''}`}
+                  aria-label={showFavorites ? 'Hide favorites' : 'Show favorites'}
+                  title={showFavorites ? 'Hide favorites' : 'Show favorites'}
+                  aria-pressed={showFavorites}
                 >
                   ⭐
                 </button>
