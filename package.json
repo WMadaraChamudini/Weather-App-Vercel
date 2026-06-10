@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "start": "npm --prefix weather-dashboard start",
+    "build": "npm --prefix weather-dashboard run build",
     "install:deps": "npm --prefix weather-dashboard install"
   }
 }

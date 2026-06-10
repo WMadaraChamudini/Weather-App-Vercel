@@ -1,0 +1,11 @@
+{
+  "installCommand": "npm --prefix weather-dashboard install",
+  "buildCommand": "npm --prefix weather-dashboard run build",
+  "outputDirectory": "weather-dashboard/build",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
