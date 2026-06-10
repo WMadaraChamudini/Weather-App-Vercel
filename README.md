@@ -2,6 +2,8 @@
 
 A lightweight React-based weather dashboard that shows current weather and a 5-day forecast for searched cities. This repository contains the frontend app located in the `weather-dashboard` folder.
 
+https://weatherappvercel-ebon.vercel.app
+
 ## Features
 - Current weather (temperature, conditions, icons)
 - 5-day forecast
