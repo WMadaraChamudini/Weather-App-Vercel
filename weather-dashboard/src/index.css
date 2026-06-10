@@ -9,6 +9,14 @@ body {
   min-height: 100vh;
 }
 
+body[data-theme='dark'] {
+  background: linear-gradient(135deg, #102a43 0%, #1c3d5a 45%, #0b1f33 100%);
+}
+
+body[data-theme='light'] {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
