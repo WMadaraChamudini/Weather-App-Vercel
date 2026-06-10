@@ -9,12 +9,22 @@ A lightweight React-based weather dashboard that shows current weather and a 5-d
 - Save favorite cities and view recent searches
 - Light / Dark theme toggle
 
+
 ## Quick start
 Prerequisite: Node.js installed.
+
+Option 1 — run from the frontend folder:
 
 ```bash
 cd weather-dashboard
 npm install
+npm start
+```
+
+Option 2 — run from the repository root (convenience scripts):
+
+```bash
+npm run install:deps
 npm start
 ```
 
