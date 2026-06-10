@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { getWeather, getForecast } from './weatherService';
 
 function App() {
   const [city, setCity] = useState('');
@@ -35,29 +36,15 @@ function App() {
     setForecastData(null);
 
     try {
-      // Fetch current weather
-      const weatherResponse = await fetch(`http://localhost:5101/api/weather?city=${encodeURIComponent(cityName)}`);
-      
-      if (!weatherResponse.ok) {
-        if (weatherResponse.status === 404) {
-          throw new Error(`City '${cityName}' not found`);
-        }
-        throw new Error('Failed to fetch weather data');
-      }
-
-      const weatherResult = await weatherResponse.json();
+      const weatherResult = await getWeather(cityName);
+      if (!weatherResult) throw new Error('Failed to fetch weather data');
       setWeatherData(weatherResult);
 
-      // Fetch 5-day forecast
-      const forecastResponse = await fetch(`http://localhost:5101/api/weather/forecast?city=${encodeURIComponent(cityName)}`);
-      
-      if (forecastResponse.ok) {
-        const forecastResult = await forecastResponse.json();
-        setForecastData(forecastResult);
-      }
+      const forecastResult = await getForecast(cityName);
+      if (forecastResult) setForecastData(forecastResult);
 
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Unknown error');
     } finally {
       setLoading(false);
     }

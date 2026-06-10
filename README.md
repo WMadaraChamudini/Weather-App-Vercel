@@ -30,24 +30,19 @@ The Weather Dashboard is a comprehensive weather application that provides real-
 
 ```
 Weather Dashboard/
-├── WeatherDashboardAPI/          # ASP.NET Core Backend
-│   ├── Controllers/
-│   │   └── WeatherController.cs  # Weather API endpoints
-│   ├── Program.cs               # Application configuration
-│   └── Properties/
-│       └── launchSettings.json  # Development settings
 ├── weather-dashboard-frontend/   # Frontend Application
-│   ├── index.html              # Main application file
-│   └── server.js              # Node.js static file server
+│   ├── public/
+│   ├── src/
+│   └── package.json
 └── README.md                   # This file
 ```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/download)
 - [Node.js](https://nodejs.org/) (for frontend server)
-- OpenWeatherMap API Key (included in demo)
+- Optional: [.NET 9.0 SDK](https://dotnet.microsoft.com/download) — only required if you want to run the backend API (not necessary in frontend-only mode)
+- Optional: OpenWeatherMap API Key (for live data) — if omitted the frontend falls back to demo/mock data
 
 ### 1. Clone the Repository
 ```bash
@@ -55,19 +50,23 @@ git clone <repository-url>
 cd "Weather app"
 ```
 
-### 2. Start the Backend (ASP.NET Core API)
-```bash
-cd WeatherDashboardAPI
-dotnet run
-```
-Backend will run on: `http://localhost:5101`
+### 2. Frontend-only mode (recommended for a self-contained demo)
 
-### 3. Start the Frontend (Node.js Server)
+The app can run entirely in the frontend. The React UI will use mock/demo weather data by default. To enable live data from OpenWeatherMap, add your API key to `weather-dashboard-frontend/src/config.js`:
+
+```js
+// weather-dashboard-frontend/src/config.js
+export const OPENWEATHERMAP_API_KEY = 'YOUR_API_KEY_HERE';
+```
+
+Start the frontend server:
+
 ```bash
 cd weather-dashboard-frontend
-npm install 
+npm install
 npm start
 ```
+
 Frontend will run on: `http://localhost:3000` by default
 
 
@@ -149,16 +148,14 @@ Frontend will run on: `http://localhost:3000` by default
 - **Error Handling** - Secure error messages without sensitive data
 - **Rate Limiting** - Built-in protection via external API limits
 
-## 🚀 Deployment Options
+### Deployment Options
 
 ### Local Development
-- Backend: `dotnet run`
-- Frontend: `node server.js`
+- Frontend: `npm start`
 
 ### Production Deployment
-- **Backend**: Deploy to Azure App Service, IIS, or Docker
-- **Frontend**: Deploy to any static hosting (Azure Static web app, Netlify, Vercel, GitHub Pages)
-- **Environment Variables**: Configure API keys and URLs
+- **Frontend**: Deploy to any static hosting (Azure Static Web Apps, Netlify, Vercel, GitHub Pages)
+- **Environment Variables**: Configure API keys if you enable live weather data
 
 ## 🧪 Testing
 
@@ -173,13 +170,7 @@ Frontend will run on: `http://localhost:3000` by default
 - Test responsive design
 
 ### API Testing
-```bash
-# Test backend health
-curl http://localhost:5101/api/weather/test
-
-# Test weather endpoint
-curl "http://localhost:5101/api/weather?city=London"
-```
+No backend API is required in frontend-only mode. If you enable OpenWeatherMap, test the live weather from the UI.
 
 ## 🔄 Development Workflow
 
@@ -187,7 +178,7 @@ curl "http://localhost:5101/api/weather?city=London"
 2. **Restart Services** if needed
 3. **Test in Browser** at http://localhost:3000
 4. **Check Console** for any errors
-5. **Verify API Responses** in Network tab
+5. **Verify API Responses** in Network tab when using live weather data
 
 ## 📱 Browser Compatibility
 
