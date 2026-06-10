@@ -65,6 +65,7 @@ export async function getForecast(city) {
     }
   });
 
+
   const forecasts = Object.keys(byDay).slice(0,5).map(key => {
     const item = byDay[key];
     return {
